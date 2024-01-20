@@ -5,6 +5,7 @@ import { ProductCardComponent } from '../../component/product-card/product-card.
 import { NgFor } from '@angular/common';
 import { ProductService } from '../../services/product.service'; // import services
 import { Product } from '../../types/Product';
+
 @Component({
   selector: 'app-home',
   standalone: true,
