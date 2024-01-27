@@ -3,7 +3,7 @@ import { HeaderComponent } from '../../component/header/header.component';
 import { FooterComponent } from '../../component/footer/footer.component';
 import { ProductCardComponent } from '../../component/product-card/product-card.component';
 import { NgFor } from '@angular/common';
-import { ProductService } from '../../services/product.service'; // import services
+import { ProductService } from '../../services/product.service';
 import { Product } from '../../types/Product';
 
 @Component({
@@ -14,14 +14,37 @@ import { Product } from '../../types/Product';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
-  productService = inject(ProductService); // inject vao bien
+  productService = inject(ProductService);
 
   productList: Product[] = [];
+  // Lifecycle Hooks Angular
+  // https://viblo.asia/p/lifecycle-hooks-trong-angular-6J3Zgw8qZmB
+  ngOnChanges() {
+    console.log('1 -ngOnChanges');
+  }
 
   ngOnInit(): void {
-    this.productService
-      .getProductList()
-      .subscribe((products) => (this.productList = products)); // callApi.then(cb fuc)
+    console.log(' 2- ngOnInit');
   }
-  //contruct
+  ngDoCheck() {
+    console.log('3 -ngDoCheck');
+  }
+
+  ngAfterContentInit() {
+    console.log('4 -ngAfterContentInit');
+  }
+
+  ngAfterContentChecked() {
+    console.log('5 -ngAfterContentChecked');
+  }
+
+  ngAfterViewInit() {
+    console.log('6 -ngAfterViewInit');
+  }
+  ngAfterViewChecked() {
+    console.log('7 -ngAfterViewChecked');
+  }
+  ngOnDestroy() {
+    console.log('8- ngOnDestroy');
+  }
 }
