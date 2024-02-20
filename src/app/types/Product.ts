@@ -13,10 +13,10 @@ export type Product = {
   };
 };
 
-export type ProductAdmin = Omit<Product, 'id' | 'category' | 'rate'> & {
-  _id: string;
+export type ProductAdmin = Omit<Product, 'id' | 'category'> & {
+  id: string;
   category: Category;
-  rate: number
+  rate: number;
 };
 
 export type ProductAdd = Omit<Product, 'id' | 'rating'> & {

@@ -1,66 +1,60 @@
-import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-
-import { ProductService } from '../../../services/product.service'; // import services
-import { ProductAdd } from '../../../types/Product';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from '../../../services/category.service';
-import { Category } from '../../../types/Category';
-import { NgFor } from '@angular/common';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+
 
 @Component({
-  selector: 'app-edit',
+  selector: 'app-edit-cate',
   standalone: true,
-  imports: [FormsModule, NgFor],
-  templateUrl: './edit.component.html',
-  styleUrl: './edit.component.css',
+  imports: [ReactiveFormsModule,FormsModule,CommonModule, RouterLink],
+  templateUrl: './edit-cate.component.html',
+  styleUrl: './edit-cate.component.css'
 })
-export class EditComponent {
-  productId: string | undefined;
-
-  productEdit: ProductAdd = {
-    title: '',
-    price: 0,
-    description: '',
-    category: '',
-    image: '',
-    rate: 0,
-  };
-
-  categoryService = inject(CategoryService); // inject vao bien
-  productService = inject(ProductService); // inject vao bien
-  router = inject(Router);
-
-  route = inject(ActivatedRoute);
-  categoryList: Category[] = [];
-
-  ngOnInit(): void {
-    this.categoryService
-      .getCategoryListAdmin()
-      .subscribe((categories) => (this.categoryList = categories));
-    // Lay ProductId From Url
-    this.route.params.subscribe((param) => {
-      this.productId = param['id'];
-      return this.getProductDetail();
-    });
+export class EditCateComponent {
+  id!: string;
+  form: FormGroup;
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private cateService: CategoryService,
+    private toastrService: ToastrService
+  ){
+    this.form = this.formBuilder.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+    })
   }
-
-  getProductDetail() {
-    if (!this.productId) return;
-    this.productService
-      .getDetailProductById(this.productId)
-      .subscribe(
-        (product) =>
-          (this.productEdit = { ...product, category: product.category._id })
-      );
+  ngOnInit() {
+    this.id = this.activatedRoute.snapshot.params['id'];
+    if (this.id) {
+      this.cateService.getDetailCategory(this.id).subscribe((data) => {
+        console.log(this.form.status);
+        this.form.patchValue({
+          name: data.name,
+          description: data.description,
+        });
+      });
+    }
   }
-
-  handleSubmit() {
-    if (!this.productId) return;
-    this.productService
-      .updateProductById(this.productEdit, this.productId)
-      .subscribe(() => this.router.navigate(['/admin/products']));
-    // call service api POST products
+  onSubmit(): void{
+    if (this.form.invalid) {
+      return;
+    }
+    const data = this.form.value;
+    if(this.id){
+       this.cateService
+      .updateCate(this.id, data)
+      .subscribe((data) => {
+        this.toastrService.success('Successfully updated', "Success");
+        this.router.navigateByUrl('admin/categories');
+      });
+    }
+    else {
+      this.toastrService.error('Error Update, Error');
+    }
   }
 }
-

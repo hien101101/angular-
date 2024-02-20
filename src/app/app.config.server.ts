@@ -1,11 +1,23 @@
-import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
-import { provideServerRendering } from '@angular/platform-server';
-import { appConfig } from './app.config';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { HomeComponent } from './pages/home/home.component';
+import { HttpClientModule } from '@angular/common/http';
 
-const serverConfig: ApplicationConfig = {
-  providers: [
-    provideServerRendering()
-  ]
-};
 
-export const config = mergeApplicationConfig(appConfig, serverConfig);
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HomeComponent,
+    AppComponent,
+    HttpClientModule,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+})
+export class AppComponent {
+  title = '123';
+}

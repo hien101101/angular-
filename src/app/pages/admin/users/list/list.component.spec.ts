@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListComponent } from './list.component';
 
-describe('ListComponent', () => {
+describe('UserlistComponent', () => {
   let component: ListComponent;
   let fixture: ComponentFixture<ListComponent>;
 
@@ -11,7 +11,7 @@ describe('ListComponent', () => {
       imports: [ListComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

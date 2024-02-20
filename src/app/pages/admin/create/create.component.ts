@@ -1,42 +1,49 @@
-import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Category } from '../../../types/Category';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, FormBuilder, FormGroup,Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../../services/category.service';
-import { NgFor } from '@angular/common';
-import { ProductService } from '../../../services/product.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router, RouterLink } from '@angular/router';
+
 
 @Component({
-  selector: 'app-create',
+  selector: 'app-create-cate',
   standalone: true,
-  imports: [FormsModule, NgFor],
-  templateUrl: './create.component.html',
-  styleUrl: './create.component.css',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink ],
+  templateUrl: './create-cate.component.html',
+  styleUrl: './create-cate.component.css'
 })
-export class CreateComponent {
-  categoryService = inject(CategoryService); // inject vao bien
-  productService = inject(ProductService); // inject vao bien
-  router = inject(Router);
-
-  productAdd = {
-    title: '',
-    price: 0,
-    description: '',
-    image: '',
-    rate: 0,
-    category: '',
-  };
-  categoryList: Category[] = [];
-
-  ngOnInit(): void {
-    this.categoryService
-      .getCategoryListAdmin()
-      .subscribe((categories) => (this.categoryList = categories)); // callApi.then(cb fuc)
+export class CreateCateComponent {
+  form!:FormGroup;
+  constructor(
+    private cateService:
+    CategoryService,
+    private toastrService:ToastrService,
+    private fb:FormBuilder,
+    private router : Router){}
+    ngOnInit():void {
+    this.form = this.fb.group({
+      name: ['',[Validators.required, Validators.minLength(3)]],
+      description: ['', Validators.required],
+    });
   }
-  handleSubmit() {
-    this.productService
-      .createProduct(this.productAdd)
-      .subscribe(() => this.router.navigate(['/admin/products']));
-    // call service api POST products
+
+
+
+  onSubmit(): void {
+   if(this.form.valid){
+      this.cateService.createCate(this.form.value).subscribe((res: any) => {
+       if (res) {
+        console.log(res);
+         this.toastrService.success('Successfully created', "Success");
+         this.router.navigate(['admin/categories']);
+       } else {
+         this.toastrService.error('Error creating');
+       }
+     })
+   }else{
+    this.toastrService.error('Error creating');
+   }
   }
 }

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditComponent } from './edit.component';
 
-describe('EditComponent', () => {
+describe('EditUserComponent', () => {
   let component: EditComponent;
   let fixture: ComponentFixture<EditComponent>;
 
@@ -11,7 +11,7 @@ describe('EditComponent', () => {
       imports: [EditComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(EditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
